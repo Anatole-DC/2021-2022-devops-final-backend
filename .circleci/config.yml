@@ -135,3 +135,9 @@ workflows:
           filters:
             branches:
               only: main
+      - server-doc-deploy:
+          requires:
+            - server-doc-build
+          filters:
+            branches:
+              only: main
