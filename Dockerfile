@@ -2,7 +2,7 @@ FROM node:lts-fermium as development
 
 WORKDIR /nest-server
 
-COPY package*.json
+COPY package*.json ./
 
 RUN yarn install --only=development
 
