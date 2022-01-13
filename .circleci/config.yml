@@ -88,6 +88,20 @@ jobs:
           root: /tmp
           paths:
             - server-doc
+          
+  server-doc-deploy:
+    <<: *shared-config
+    working_directory: ~/deploy-doc-server
+    steps:
+      - attach_workspace:
+          at: /tmp
+      - run:
+          name: Install netlify
+          command: |
+            yarn add -D netlify-cli
+      - run:
+          name: Deploy app
+          command: yarn netlify deploy --auth $NETLIFY_AUTH_TOKEN --dir /tmp/server-doc --site $NETLIFY_SITE_ID --prod
 
 workflows:
   version: 2
