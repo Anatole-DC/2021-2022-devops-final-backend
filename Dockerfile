@@ -10,7 +10,7 @@ COPY . .
 
 RUN yarn run build
 
-FROM node:lts-fermium as development
+FROM node:lts-fermium as production
 
 ARG NODE_ENV=production
 ENV NODE_ENV=${NODE_ENV}

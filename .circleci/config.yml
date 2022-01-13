@@ -103,6 +103,26 @@ jobs:
           name: Deploy app
           command: yarn netlify deploy --auth $NETLIFY_AUTH_TOKEN --dir /tmp/server-doc --site $NETLIFY_SITE_ID --prod
 
+  docker-build-and-push:
+    working_directory: /dockerapp
+    docker:
+      - image: docker:17.05.0-ce-git
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: Build application Docker image
+          command: |
+            docker build --cache-from=app -t app .
+      - deploy:
+          name: Publish application to docker hub
+          command: |
+            docker login -e $PROD_EMAIL -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
+            docker tag app $DOCKERHUB_USERNAME/$DOCKERHUB_APP_NAME:$CIRCLE_BUILD_NUM
+            docker tag app $DOCKERHUB_USERNAME/$DOCKERHUB_APP_NAME:latest
+            docker push $DOCKERHUB_USERNAME/$DOCKERHUB_APP_NAME:$CIRCLE_BUILD_NUM
+            docker push $DOCKERHUB_USERNAME/$DOCKERHUB_APP_NAME:latest
+
 workflows:
   version: 2
   build-test-and-lint:
@@ -138,6 +158,15 @@ workflows:
       - server-doc-deploy:
           requires:
             - server-doc-build
+          filters:
+            branches:
+              only: main
+      - docker-build-and-push:
+          requires:
+            - build
+            - lint
+            - back-test-e2e
+            - back-test-unit
           filters:
             branches:
               only: main
