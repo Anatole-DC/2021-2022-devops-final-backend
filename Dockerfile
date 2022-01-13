@@ -22,3 +22,7 @@ COPY package*.json ./
 RUN yarn install --only=production
 
 COPY . .
+
+COPY --from=development /nest-server/dist ./dist
+
+CMD ["node", "dist/main"]
