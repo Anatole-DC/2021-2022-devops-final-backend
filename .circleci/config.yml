@@ -90,6 +90,7 @@ workflows:
             - build
             - lint
             - back-test-unit
+            - back-test-e2e
           filters:
             branches:
               only: main
