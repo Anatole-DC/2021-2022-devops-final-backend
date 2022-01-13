@@ -65,3 +65,6 @@ workflows:
       - back-test-unit:
           requires:
             - build
+      - back-test-e2e:
+          requires:
+            - build
